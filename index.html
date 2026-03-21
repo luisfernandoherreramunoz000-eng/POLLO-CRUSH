@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --azul: #004085; --rojo: #d32f2f; --amarillo: #ffcc00; --oscuro: #1a1a1a; }
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #f0f2f5; margin: 0; padding-bottom: 150px; }
+
+        /* --- HEADER --- */
+        .header { background: linear-gradient(135deg, var(--azul), #002752); color: white; padding: 30px 20px; text-align: center; border-bottom: 5px solid var(--amarillo); border-radius: 0 0 30px 30px; margin-bottom: 20px; }
+        .logo { width: 90px; height: 90px; border-radius: 50%; border: 3px solid white; object-fit: cover; background: white; }
+
+        /* --- RULETA --- */
+        #roulette-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 10000; display: flex; justify-content: center; align-items: center; }
+        .wheel-card { background: white; padding: 25px; border-radius: 25px; text-align: center; width: 90%; max-width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .canvas-container { position: relative; width: 260px; height: 260px; margin: 15px auto; }
+        #wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid var(--oscuro); transition: transform 5s cubic-bezier(0.1, 0, 0.1, 1); }
+        .marker { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid var(--amarillo); z-index: 10; }
+
+        /* --- MENÚ --- */
+        .section { padding: 0 20px; }
+        .featured-card { position: relative; border-radius: 20px; overflow: hidden; height: 180px; background-size: cover; background-position: center; display: flex; align-items: flex-end; margin-bottom: 20px; border: 2px solid white; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        /* MOVIMIENTO REBOTE */
+        .featured-badge { position: absolute; top: 10px; right: 10px; background: var(--amarillo); padding: 5px 12px; border-radius: 20px; font-size: 0.7em; font-weight: 800; animation: bounce 2s infinite; color: var(--oscuro); }
+        @keyframes bounce { 
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 
+            40% {transform: translateY(-12px);} 
+            60% {transform: translateY(-6px);} 
+        }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .product-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee; }
+        .product-img { width: 100%; height: 120px; object-fit: cover; }
+        .product-info { padding: 10px; }
+        .product-name { font-size: 0.85em; font-weight: 700; min-height: 40px; color: var(--oscuro); }
+        
+        .btn-like { background: #fff5f5; border: 1px solid #ffebeb; border-radius: 50px; padding: 4px 10px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 0.75em; margin-bottom: 8px; transition: 0.2s; }
+        .btn-like:active { transform: scale(0.9); }
+        .product-price { color: var(--rojo); font-weight: 800; margin: 5px 0; font-size: 1.1em; }
+        
+        .side-select { width: 100%; padding: 8px; font-size: 0.75em; margin-bottom: 8px; border-radius: 8px; border: 2px solid #f0f0f0; background: white; outline: none; }
+        .qty-controls { display: flex; justify-content: space-between; align-items: center; background: #f8f8f8; border-radius: 10px; padding: 5px; border: 1px solid #eee; }
+        .btn-qty { background: var(--rojo); color: white; border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-weight: 800; font-size: 1.2em; }
+
+        /* --- BARRA PEDIDO --- */
+        .order-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px; box-shadow: 0 -5px 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 12px; z-index: 1000; border-radius: 25px 25px 0 0; }
+        .order-info { display: flex; justify-content: space-between; align-items: center; }
+        .btn-clear { background: #fff1f1; color: var(--rojo); border: 1px solid #ffdcdc; padding: 6px 14px; border-radius: 50px; font-size: 0.7em; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .btn-wa { background: #25d366; color: white; border: none; padding: 16px; border-radius: 50px; font-weight: 800; cursor: pointer; width: 100%; font-size: 1.1em; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); transition: 0.3s; }
+        .btn-wa:active { transform: scale(0.98); }
+    </style>
+</head>
+<body>
+
+    <div id="roulette-overlay">
+        <div class="wheel-card">
+            <h2 style="margin:0; color:var(--rojo);">🎰 ¡Gira y Gana!</h2>
+            <p style="font-size:0.7em; color:#666; margin-bottom:15px;">¡Obtén un premio para tu pedido!</p>
+            <div class="canvas-container">
+                <div class="marker"></div>
+                <canvas id="wheel" width="300" height="300"></canvas>
+            </div>
+            <div id="prize-display" style="font-size:1.4em; font-weight:800; color:var(--azul); margin:15px 0; display:none; animation: fadeIn 0.5s;"></div>
+            <button id="spin-btn" style="width:100%; background:var(--rojo); color:white; border:none; padding:15px; border-radius:50px; font-weight:800; cursor:pointer;" onclick="spinNow()">¡PROBAR SUERTE!</button>
+            <button id="close-btn" style="width:100%; background:var(--azul); color:white; border:none; padding:12px; border-radius:50px; font-weight:800; margin-top:10px; display:none;" onclick="closeWheel()">VER EL MENÚ 🍗</button>
+        </div>
+    </div>
+
+    <div class="header">
+        <img src="https://lh3.googleusercontent.com/d/1JFeMWO19rWszc_0SXV8GY3_dvYF7UOho" class="logo">
+        <h1 style="margin:10px 0 0 0; font-size: 1.2em; letter-spacing: 1px;">POLLO CRUSH</h1>
+    </div>
+
+    <div class="section">
+        <div id="top-product"></div>
+        <div id="menu-grid" class="menu-grid"></div>
+    </div>
+
+    <div class="order-bar">
+        <div class="order-info">
+            <div>
+                <small style="color:#999; font-size:0.65em; font-weight:800; letter-spacing:1px;">TOTAL A PAGAR</small>
+                <span id="total-view" style="font-weight:800; font-size:1.6em; display:block; color:var(--oscuro);">$0</span>
+            </div>
+            <button class="btn-clear" onclick="limpiarPedido()">BORRAR TODO 🗑️</button>
+        </div>
+        <button class="btn-wa" onclick="sendWhatsApp()">PEDIR POR WHATSAPP 📱</button>
+    </div>
+
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzA-rGLunfhTfYFmfr8GmON7gma6Henq6VRe6SRV7Eblw1Ytz3m55nTwbGCmd1f9JCG/exec";
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRN17H8Ew-VPQ9WkrOqEaAIeYAHCUjRD8Wegl669g74MPa_TI8vgeJUrzojPeuk2NZvlKAKWffMzG0k/pub?gid=0&single=true&output=csv';
+    const PHONE = "573108983783";
+    
+    const win_opts = ["Gaseosa ptbon mini", "Mini Crush", "Salsa extra", "5% Dcto", "10% off"];
+    const lose_opts = ["¡Casi!", "Cerca..."];
+    let wheel_items = [...win_opts, ...lose_opts];
+    let menuData = [];
+    let pedido = {};
+    let miPremio = "";
+
+    window.onload = () => { drawWheel(); loadMenu(); };
+
+    function drawWheel() {
+        const canvas = document.getElementById('wheel');
+        const ctx = canvas.getContext('2d');
+        const arc = (Math.PI * 2) / wheel_items.length;
+        wheel_items.forEach((opt, i) => {
+            ctx.beginPath(); ctx.fillStyle = i % 2 == 0 ? "#004085" : "#d32f2f";
+            ctx.moveTo(150, 150); ctx.arc(150, 150, 150, i * arc, (i + 1) * arc); ctx.fill();
+            ctx.save(); ctx.translate(150, 150); ctx.rotate(i * arc + arc / 2);
+            ctx.fillStyle = "white"; ctx.font = "bold 10px Poppins"; ctx.textAlign = "right";
+            ctx.fillText(opt, 140, 5); ctx.restore();
+        });
+    }
+
+    function spinNow() {
+        document.getElementById('spin-btn').style.display = 'none';
+        const randDeg = Math.floor(Math.random() * 360) + 4000;
+        document.getElementById('wheel').style.transform = `rotate(${randDeg}deg)`;
+        setTimeout(() => {
+            const idx = Math.floor(((360 - (randDeg % 360) + 270) % 360) / (360 / wheel_items.length));
+            miPremio = wheel_items[idx];
+            const prizeBox = document.getElementById('prize-display');
+            prizeBox.innerText = win_opts.includes(miPremio) ? "🎁 ¡GANASTE: " + miPremio + "!" : "😅 Casi lo logras...";
+            prizeBox.style.display = "block";
+            document.getElementById('close-btn').style.display = "block";
+        }, 5000);
+    }
+
+    function closeWheel() { document.getElementById('roulette-overlay').style.display = "none"; }
+
+    async function loadMenu() {
+        const res = await fetch(CSV_URL);
+        const data = await res.text();
+        const rows = data.split('\n').slice(1);
+        const grid = document.getElementById('menu-grid');
+        
+        rows.forEach((row, i) => {
+            const cols = row.split(','); if(cols.length < 3) return;
+            const id = 'p'+i;
+            const imgId = cols[3].includes('id=') ? cols[3].split('id=')[1].split('&')[0] : (cols[3].includes('/d/') ? cols[3].split('/d/')[1].split('/')[0] : '');
+            const img = `https://lh3.googleusercontent.com/d/${imgId}`;
+            const item = { id, nombre: cols[0], precio: parseInt(cols[2].replace(/\D/g,'')), img, likes: parseInt(cols[4])||0 };
+            menuData.push(item);
+            pedido[id] = 0; // Inicializar cantidad
+
+            grid.innerHTML += `
+                <div class="product-card">
+                    <img src="${img}" class="product-img">
+                    <div class="product-info">
+                        <div class="product-name">${item.nombre}</div>
+                        <button class="btn-like" onclick="darLike(${i}, '${id}')">❤️ <span id="lk-${id}">${item.likes}</span></button>
+                        <div class="product-price">$${item.precio.toLocaleString()}</div>
+                        <select id="side-${id}" class="side-select">
+                            <option value="Francesa">🍟 Papas Francesas</option>
+                            <option value="Salada">🥔 Papa Salada</option>
+                            <option value="Patacón">🍌 Patacón</option>
+                            <option value="Bollo Limpio">⚪ Bollo Limpio</option>
+                        </select>
+                        <div class="qty-controls">
+                            <button class="btn-qty" onclick="qty('${id}',-1)">-</button>
+                            <span id="qty-${id}" style="font-weight:800; font-size:1.1em;">0</span>
+                            <button class="btn-qty" onclick="qty('${id}',1)">+</button>
+                        </div>
+                    </div>
+                </div>`;
+
+            if(i === 0) {
+                document.getElementById('top-product').innerHTML = `
+                    <div class="featured-card" onclick="qty('${id}', 1)" style="background-image: linear-gradient(to top, rgba(0,0,0,0.85), transparent), url('${img}')">
+                        <div class="featured-badge">🔥 EL FAVORITO</div>
+                        <div style="padding:15px; color:white;">
+                            <h3 style="margin:0; color:var(--amarillo);">${item.nombre}</h3>
+                            <p style="margin:0; font-size:0.8em;">$${item.precio.toLocaleString()} | Toca para agregar</p>
+                        </div>
+                    </div>`;
+            }
+        });
+    }
+
+    async function darLike(row, id) {
+        const span = document.getElementById('lk-'+id);
+        span.innerText = parseInt(span.innerText) + 1;
+        fetch(`${SCRIPT_URL}?row=${row}`);
+    }
+
+    function qty(id, d) {
+        pedido[id] = Math.max(0, pedido[id] + d);
+        const qtyLabel = document.getElementById('qty-'+id);
+        if(qtyLabel) qtyLabel.innerText = pedido[id];
+        actualizarTotal();
+    }
+
+    function actualizarTotal() {
+        let total = 0;
+        menuData.forEach(it => {
+            total += (pedido[it.id] || 0) * it.precio;
+        });
+        document.getElementById('total-view').innerText = '$' + total.toLocaleString('es-CO');
+    }
+
+    function limpiarPedido() {
+        if(confirm("¿Seguro que quieres vaciar el carrito?")) {
+            for (let id in pedido) {
+                pedido[id] = 0;
+                const el = document.getElementById('qty-' + id);
+                if (el) el.innerText = "0";
+            }
+            actualizarTotal();
+        }
+    }
+
+    function sendWhatsApp() {
+        let txt = "🍗 *NUEVO PEDIDO POLLO CRUSH*\n\n";
+        let hasItems = false;
+        menuData.forEach(it => {
+            if(pedido[it.id] > 0) {
+                const acomp = document.getElementById(`side-${it.id}`).value;
+                txt += `✅ *${pedido[it.id]}x* ${it.nombre}\n   └ _Acompañante: ${acomp}_\n`;
+                hasItems = true;
+            }
+        });
+        if(!hasItems) return alert("¡Tu carrito está vacío!");
+        if(miPremio && win_opts.includes(miPremio)) txt += `\n🎁 *PREMIO RULETA:* ${miPremio}`;
+        txt += `\n\n💰 *TOTAL A PAGAR:* ${document.getElementById('total-view').innerText}`;
+        window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(txt)}`);
+    }
+</script>
+</body>
+</html>
