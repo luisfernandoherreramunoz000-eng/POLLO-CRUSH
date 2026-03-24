@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
     <style>
         :root { --azul: #004085; --rojo: #d32f2f; --amarillo: #ffcc00; --oscuro: #1a1a1a; }
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -14,7 +15,7 @@
         .logo { width: 90px; height: 90px; border-radius: 50%; border: 3px solid white; object-fit: cover; background: white; }
 
         /* --- RULETA --- */
-        #roulette-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 10000; display: flex; justify-content: center; align-items: center; }
+        #roulette-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 10000; display: none; /* Controlado por el ERP */ justify-content: center; align-items: center; }
         .wheel-card { background: white; padding: 25px; border-radius: 25px; text-align: center; width: 90%; max-width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .canvas-container { position: relative; width: 260px; height: 260px; margin: 15px auto; }
         #wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid var(--oscuro); transition: transform 5s cubic-bezier(0.1, 0, 0.1, 1); }
@@ -50,8 +51,10 @@
         .order-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px; box-shadow: 0 -5px 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 12px; z-index: 1000; border-radius: 25px 25px 0 0; }
         .order-info { display: flex; justify-content: space-between; align-items: center; }
         .btn-clear { background: #fff1f1; color: var(--rojo); border: 1px solid #ffdcdc; padding: 6px 14px; border-radius: 50px; font-size: 0.7em; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; }
-        .btn-wa { background: #25d366; color: white; border: none; padding: 16px; border-radius: 50px; font-weight: 800; cursor: pointer; width: 100%; font-size: 1.1em; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); transition: 0.3s; }
+        .btn-wa { background: var(--azul); color: white; border: none; padding: 16px; border-radius: 50px; font-weight: 800; cursor: pointer; width: 100%; font-size: 1.1em; box-shadow: 0 4px 15px rgba(0, 64, 133, 0.3); transition: 0.3s; }
         .btn-wa:active { transform: scale(0.98); }
+        
+        .swal2-popup { font-family: 'Poppins', sans-serif !important; border-radius: 20px !important; }
     </style>
 </head>
 <body>
@@ -88,22 +91,69 @@
             </div>
             <button class="btn-clear" onclick="limpiarPedido()">BORRAR TODO 🗑️</button>
         </div>
-        <button class="btn-wa" onclick="sendWhatsApp()">PEDIR POR WHATSAPP 📱</button>
+        <button class="btn-wa" id="btn-enviar-pedido" onclick="enviarPedidoPOS()">ENVIAR PEDIDO AL LOCAL 🚀</button>
     </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzA-rGLunfhTfYFmfr8GmON7gma6Henq6VRe6SRV7Eblw1Ytz3m55nTwbGCmd1f9JCG/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbySx3hZXTMa4liDxVPjft62JJuA_TpQKog0BMGyvQHI2849unkNjyBZuQ1JyZnLqFJM/exec";
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRN17H8Ew-VPQ9WkrOqEaAIeYAHCUjRD8Wegl669g74MPa_TI8vgeJUrzojPeuk2NZvlKAKWffMzG0k/pub?gid=0&single=true&output=csv';
-    const PHONE = "573108983783";
+    const CSV_URL_RULETA = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT29QHpj8pZgP-o_Iy0ePAQM74zSJmrhuQ2eO7byNYdLf64Dv3cmzhQhUa8i2kbV3eCZcX9ipFXyL0L/pub?gid=120299449&single=true&output=csv';
     
-    const win_opts = ["Gaseosa ptbon mini", "Mini Crush", "Salsa extra", "5% Dcto", "10% off"];
-    const lose_opts = ["¡Casi!", "Cerca..."];
-    let wheel_items = [...win_opts, ...lose_opts];
+    let win_opts = [];
+    let lose_opts = [];
+    let wheel_items = [];
     let menuData = [];
     let pedido = {};
     let miPremio = "";
+    let ruletaActiva = false;
 
-    window.onload = () => { drawWheel(); loadMenu(); };
+    window.onload = async () => { 
+        await loadConfigRuleta(); 
+        loadMenu(); 
+    };
+
+    // --- FUNCIÓN QUE LEE EL ERP (CSV_URL_RULETA) ---
+    async function loadConfigRuleta() {
+        try {
+            const res = await fetch(CSV_URL_RULETA);
+            const data = await res.text();
+            
+            // Lector CSV para evitar problemas si pones comillas en excel
+            const rows = data.split('\n');
+            
+            if (rows.length > 1) {
+                // Separamos la fila 2 por columnas
+                const cols = rows[1].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim()); 
+                
+                // Col A: ¿Activa?
+                ruletaActiva = cols[0] && cols[0].toUpperCase() === "SI";
+                
+                // Col B: Ganadores (separados por coma dentro de la celda)
+                if (cols[1]) {
+                    win_opts = cols[1].split(',').map(item => item.trim()).filter(i => i !== "");
+                }
+                
+                // Col C: Perdedores (separados por coma dentro de la celda)
+                if (cols[2]) {
+                    lose_opts = cols[2].split(',').map(item => item.trim()).filter(i => i !== "");
+                }
+            }
+
+            // Si hay un error y no se leen datos, ponemos estos por defecto
+            if(win_opts.length === 0) win_opts = ["Premio Sorpresa"];
+            if(lose_opts.length === 0) lose_opts = ["¡Casi!"];
+
+            wheel_items = [...win_opts, ...lose_opts];
+
+            if (ruletaActiva && wheel_items.length > 0) {
+                document.getElementById('roulette-overlay').style.display = "flex";
+                drawWheel();
+            }
+
+        } catch (error) {
+            console.error("Error leyendo configuración ERP:", error);
+        }
+    }
 
     function drawWheel() {
         const canvas = document.getElementById('wheel');
@@ -143,8 +193,12 @@
         rows.forEach((row, i) => {
             const cols = row.split(','); if(cols.length < 3) return;
             const id = 'p'+i;
+            
+            // --- LA FUNCIÓN DE LAS IMÁGENES DEL CÓDIGO NÚMERO 2 ---
             const imgId = cols[3].includes('id=') ? cols[3].split('id=')[1].split('&')[0] : (cols[3].includes('/d/') ? cols[3].split('/d/')[1].split('/')[0] : '');
             const img = `https://lh3.googleusercontent.com/d/${imgId}`;
+            // ------------------------------------------------------
+
             const item = { id, nombre: cols[0], precio: parseInt(cols[2].replace(/\D/g,'')), img, likes: parseInt(cols[4])||0 };
             menuData.push(item);
             pedido[id] = 0; // Inicializar cantidad
@@ -204,31 +258,98 @@
         document.getElementById('total-view').innerText = '$' + total.toLocaleString('es-CO');
     }
 
-    function limpiarPedido() {
-        if(confirm("¿Seguro que quieres vaciar el carrito?")) {
+    function limpiarPedido(silent = false) {
+        if(silent || confirm("¿Seguro que quieres vaciar el carrito?")) {
             for (let id in pedido) {
                 pedido[id] = 0;
                 const el = document.getElementById('qty-' + id);
                 if (el) el.innerText = "0";
             }
             actualizarTotal();
+            miPremio = ""; // Limpiar premio por si acaso
         }
     }
 
-    function sendWhatsApp() {
-        let txt = "🍗 *NUEVO PEDIDO POLLO CRUSH*\n\n";
+    // --- LÓGICA: ENVIAR PEDIDO DIRECTO AL POS ---
+    function enviarPedidoPOS() {
+        let totalVal = 0;
         let hasItems = false;
+        let detalleTexto = "";
+
         menuData.forEach(it => {
             if(pedido[it.id] > 0) {
                 const acomp = document.getElementById(`side-${it.id}`).value;
-                txt += `✅ *${pedido[it.id]}x* ${it.nombre}\n   └ _Acompañante: ${acomp}_\n`;
+                detalleTexto += `✅ ${pedido[it.id]}x ${it.nombre} (Acomp: ${acomp})\n`;
+                totalVal += pedido[it.id] * it.precio;
                 hasItems = true;
             }
         });
-        if(!hasItems) return alert("¡Tu carrito está vacío!");
-        if(miPremio && win_opts.includes(miPremio)) txt += `\n🎁 *PREMIO RULETA:* ${miPremio}`;
-        txt += `\n\n💰 *TOTAL A PAGAR:* ${document.getElementById('total-view').innerText}`;
-        window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(txt)}`);
+
+        if(!hasItems) return Swal.fire('Carrito Vacío', 'Agrega algunos productos antes de pedir.', 'warning');
+        
+        // Verifica si la ruleta estaba activa y si el cliente ganó uno de los premios válidos
+        if(ruletaActiva && miPremio && win_opts.includes(miPremio)) {
+            detalleTexto += `\n🎁 PREMIO DE RULETA: ${miPremio}`;
+        }
+
+        // Pedimos los datos al cliente con SweetAlert
+        Swal.fire({
+            title: 'Completa tu Pedido',
+            html: `
+                <input type="text" id="swal-cliente" class="swal2-input" placeholder="Tu Nombre" style="width: 80%;">
+                <input type="tel" id="swal-tel" class="swal2-input" placeholder="Teléfono / WhatsApp" style="width: 80%;">
+            `,
+            confirmButtonText: 'CONFIRMAR PEDIDO',
+            confirmButtonColor: 'var(--azul)',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            preConfirm: () => {
+                const nombre = document.getElementById('swal-cliente').value.trim();
+                const tel = document.getElementById('swal-tel').value.trim();
+                if (!nombre || !tel) {
+                    Swal.showValidationMessage('Por favor ingresa tu nombre y teléfono');
+                }
+                return { nombre: nombre, telefono: tel };
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const payload = {
+                    id: "W-" + Date.now().toString().slice(-6),
+                    cliente_nombre: result.value.nombre,
+                    telefono: result.value.telefono,
+                    detalle: detalleTexto,
+                    total: totalVal
+                };
+
+                const btn = document.getElementById('btn-enviar-pedido');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> ENVIANDO...";
+                btn.disabled = true;
+
+                // Enviamos el postData al servidor (POS) con permisos correctos
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: "ADD_WEB_ORDER", payload: payload }),
+                    redirect: 'follow'
+                }).then(res => res.json())
+                  .then(res => {
+                      Swal.fire({
+                          title: '¡Pedido Enviado!',
+                          text: 'Tu orden fue recibida por el local.',
+                          icon: 'success',
+                          confirmButtonColor: 'var(--rojo)'
+                      });
+                      limpiarPedido(true); // limpia en silencio
+                      btn.innerHTML = originalText;
+                      btn.disabled = false;
+                  }).catch(e => {
+                      Swal.fire('Error', 'Hubo un problema de conexión', 'error');
+                      btn.innerHTML = originalText;
+                      btn.disabled = false;
+                  });
+            }
+        });
     }
 </script>
 </body>
