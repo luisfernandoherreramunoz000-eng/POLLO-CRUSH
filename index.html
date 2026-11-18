@@ -97,12 +97,13 @@ input:focus,textarea:focus,select:focus,button:focus-visible{outline:3px solid v
 <button class="x" onclick="closeCart()" aria-label="Cerrar">×</button>
 <h2>Tu pedido</h2><div id="lines"></div><div class="tot"><span>Total</span><span id="tt"></span></div>
 <label>Nombre</label><input id="nm" autocomplete="name">
-<label>Entrega</label><select id="tp" onchange="adr.style.display=this.value=='Domicilio'?'block':'none'"><option>Domicilio</option><option>Recoger en el local</option></select>
+<label>Entrega</label><select id="tp" onchange="tpc()"><option>Domicilio</option><option>Recoger en el local</option><option>Comer en el local</option></select>
 <div id="adr"><label>Dirección y barrio</label><input id="ad" autocomplete="street-address"></div>
+<div id="mesa" style="display:none"><label>Número de mesa</label><input id="ms" inputmode="numeric" placeholder="Ej: 4"></div>
 <label>Método de pago</label><select id="pg"><option>Efectivo</option><option>Transferencia</option></select>
 <label>Notas (opcional)</label><textarea id="nt" rows="2" placeholder="Sin tomate, salsas extra…"></textarea>
 <button class="send" onclick="send()">Enviar pedido por WhatsApp</button>
-<p class="note">El valor del domicilio se confirma por WhatsApp.</p>
+<p class="note" id="nota">El valor del domicilio se confirma por WhatsApp.</p>
 </div></div>
 <script>
 const WA="573108983783";
@@ -153,15 +154,18 @@ let tick=false;pages.addEventListener("scroll",()=>{if(!tick){tick=true;requestA
 addEventListener("resize",()=>{measure();pages.scrollTo({left:cur*pages.clientWidth})});
 document.fonts&&document.fonts.ready.then(measure);
 measure();setActive(0);
+function tpc(){const v=$("tp").value;$("adr").style.display=v=="Domicilio"?"block":"none";$("mesa").style.display=v=="Comer en el local"?"block":"none";$("nota").style.display=v=="Comer en el local"?"none":"block"}
 function send(){
   const[n,t]=tot();if(!n)return;
-  const dom=$("tp").value=="Domicilio";
+  const dom=$("tp").value=="Domicilio",loc=$("tp").value=="Comer en el local";
   if(!$("nm").value.trim()){$("nm").focus();return}
   if(dom&&!$("ad").value.trim()){$("ad").focus();return}
+  if(loc&&!$("ms").value.trim()){$("ms").focus();return}
   let m="*Nuevo pedido — Pollo Crush*\n\n";
   items.forEach((it,i)=>{if(cart[i])m+=`• ${cart[i]} × ${it.n} — ${cop(cart[i]*it.p)}\n`});
   m+=`\n*Total productos:* ${cop(t)}\n*Cliente:* ${$("nm").value.trim()}\n*Entrega:* ${$("tp").value}\n`;
   if(dom)m+=`*Dirección:* ${$("ad").value.trim()}\n`;
+  if(loc)m+=`*Mesa:* ${$("ms").value.trim()}\n`;
   m+=`*Pago:* ${$("pg").value}\n`;
   if($("nt").value.trim())m+=`*Notas:* ${$("nt").value.trim()}\n`;
   window.open("https://wa.me/"+WA+"?text="+encodeURIComponent(m),"_blank");
