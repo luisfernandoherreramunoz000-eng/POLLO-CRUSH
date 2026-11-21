@@ -1,0 +1,165 @@
+{
+ "cfg": {
+  "name": "Pollo Crush",
+  "tag": "Desliza y elige · Pide por WhatsApp",
+  "info": "",
+  "wa": "573108983783",
+  "cur": "$",
+  "p": "#0057a6",
+  "a": "#e0301e",
+  "y": "#f9b400",
+  "b": "#fffaf0",
+  "logo": "img/logo.jpg",
+  "dom": true,
+  "rec": true,
+  "mesa": true,
+  "pay": [
+   "Efectivo",
+   "Transferencia"
+  ],
+  "note": "El valor del domicilio se confirma por WhatsApp."
+ },
+ "cats": [
+  {
+   "cat": "Combos",
+   "items": [
+    {
+     "n": "Combo individual ala",
+     "d": "175 g de papa a la francesa + 1 ala de pollo broaster completa + miel + tomate",
+     "p": 8000,
+     "img": "img/combo-individual-ala.jpg",
+     "old": 0,
+     "soldout": false,
+     "hide": false
+    },
+    {
+     "n": "Combo individual muslo",
+     "d": "175 g de papa a la francesa + 1 muslo de pollo broaster + miel + tomate",
+     "p": 8000,
+     "img": "img/combo-individual-muslo.jpg",
+     "old": 0,
+     "soldout": false,
+     "hide": false
+    },
+    {
+     "n": "Combo individual contramuslo",
+     "d": "175 g de papa a la francesa + 1 contramuslo de pollo broaster + miel + tomate",
+     "p": 9900,
+     "img": "img/combo-individual-contramuslo.jpg",
+     "old": 0,
+     "soldout": false,
+     "hide": false
+    },
+    {
+     "n": "Combo individual pechuga",
+     "d": "175 g de papa a la francesa + 1 pechuga abierta de pollo broaster + miel + tomate",
+     "p": 10900,
+     "img": "img/combo-individual-pechuga.jpg",
+     "old": 0,
+     "soldout": false,
+     "hide": false
+    },
+    {
+     "n": "Combo pareja alas",
+     "d": "275 g de papa a la francesa + 2 alas de pollo broaster + miel + tomate",
+     "p": 13500,
+     "img": "img/combo-pareja-alas.jpg",
+     "old": 0,
+     "soldout": false,
+     "hide": false
+    },
+    {
+     "n": "Combo pareja muslos",
+     "d": "275 g de papa a la francesa + 2 muslos de pollo broaster + miel + tomate",
+     "p": 13500,
+     "img": "img/combo-pareja-muslos.jpg",
+     "old": 0,
+     "soldout": false,
+     "hide": false
+    },
+    {
+     "n": "Combo pareja muslo y ala",
+     "d": "275 g de papa a la francesa + 1 muslo + 1 ala completa de pollo broaster + miel + tomate",
+     "p": 13500,
+     "img": "img/combo-pareja-muslo-y-ala.jpg",
+     "old": 0,
+     "soldout": false,
+     "hide": false
+    },
+    {
+     "n": "Cuarto muslo y contramuslo",
+     "d": "275 g de papa a la francesa + 1 muslo y contramuslo de pollo broaster + miel + tomate",
+     "p": 14900,
+     "img": "img/cuarto-muslo-y-contramuslo.jpg",
+     "old": 0,
+     "soldout": false,
+     "hide": false
+    },
+    {
+     "n": "Cuarto pechuga y ala",
+     "d": "275 g de papa a la francesa + 1 ala + 1 pechuga abierta de pollo broaster + miel + tomate",
+     "p": 15500,
+     "img": "img/cuarto-pechuga-y-ala.jpg",
+     "old": 0,
+     "soldout": false,
+     "hide": false
+    },
+    {
+     "n": "Medio pollo",
+     "d": "350 g de papa a la francesa + 1 ala + 1 pechuga + 1 muslo + 1 contramuslo de pollo broaster + gaseosa 1 L + miel + tomate",
+     "p": 32900,
+     "img": "img/medio-pollo.jpg",
+     "old": 0,
+     "soldout": false,
+     "hide": false
+    },
+    {
+     "n": "1 pollo entero",
+     "d": "700 g de papa a la francesa + 2 alas + 2 pechugas + 2 muslos + 2 contramuslos de pollo broaster + miel + tomate",
+     "p": 56900,
+     "img": "img/1-pollo-entero.jpg",
+     "old": 0,
+     "soldout": false,
+     "hide": false
+    }
+   ]
+  },
+  {
+   "cat": "Especiales",
+   "items": [
+    {
+     "n": "Salchicrush",
+     "d": "250 g de papas a la francesa + salchicha + queso costeño rallado + papa ripio + salsas tomate, piña, rosada, BBQ, crema leña + mini crush",
+     "p": 14500,
+     "img": "img/salchicrush.jpg",
+     "old": 0,
+     "soldout": false,
+     "hide": false
+    },
+    {
+     "n": "Mini Crush",
+     "d": "175 g de papa a la francesa + trocitos de pechuga broaster completa + miel + tomate",
+     "p": 12800,
+     "img": "img/mini-crush.jpg",
+     "old": 0,
+     "soldout": false,
+     "hide": false
+    }
+   ]
+  },
+  {
+   "cat": "Adiciones",
+   "items": [
+    {
+     "n": "Porción de papas a la francesa",
+     "d": "200 g de papas a la francesa",
+     "p": 4000,
+     "img": "img/porcion-de-papas-a-la-francesa.jpg",
+     "old": 0,
+     "soldout": false,
+     "hide": false
+    }
+   ]
+  }
+ ]
+}

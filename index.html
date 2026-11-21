@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0057a6" id="tc">
+<title>Menú</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700&display=swap">
+<style>
+:root{--blue:#0057a6;--red:#e0301e;--yel:#f9b400;--bg:#fffaf0;--onp:#fff;--ona:#fff;--ink:#1d2433;--mut:#667085;--line:#eadfca;--ease:cubic-bezier(.2,.8,.2,1)}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+body{font-family:Nunito,system-ui,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:100px;overflow-x:hidden}
+h1,h2,h3,.p,button{font-family:'Baloo 2',system-ui,sans-serif}
+button{cursor:pointer;border:0}
+header{background:linear-gradient(135deg,var(--blue),color-mix(in srgb,var(--blue) 72%,#fff));color:var(--onp);padding:14px 16px;display:flex;align-items:center;gap:12px;border-radius:0 0 26px 26px}
+header img{width:66px;height:66px;border-radius:50%;background:#fff;object-fit:contain;animation:float 3s ease-in-out infinite}
+header h1{font-size:1.5rem;line-height:1.05;animation:slide .7s var(--ease) both}
+header p{opacity:.9;font-size:.9rem;animation:slide .7s .15s var(--ease) both}
+@keyframes float{50%{transform:translateY(-5px) rotate(-4deg)}}
+@keyframes slide{from{opacity:0;transform:translateX(-18px)}}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;gap:6px;overflow-x:auto;padding:12px 12px 8px;scrollbar-width:none;position:sticky}
+nav::-webkit-scrollbar{display:none}
+#ind{position:absolute;left:0;top:12px;height:36px;border-radius:99px;background:var(--red);transition:transform .35s var(--ease),width .35s var(--ease);z-index:0}
+nav button{position:relative;z-index:1;flex:none;background:#fff;color:var(--blue);font-weight:700;font-size:.95rem;padding:0 16px;height:36px;border-radius:99px;border:2px solid var(--blue);transition:color .25s,background .25s,border-color .25s}
+nav button.on{color:var(--ona);background:transparent;border-color:transparent}
+#pages{display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;align-items:flex-start}
+#pages::-webkit-scrollbar{display:none}
+.page{flex:none;width:100%;scroll-snap-align:start;scroll-snap-stop:always;padding:6px 12px 10px;max-width:100vw}
+.page h2{font-size:1.5rem;color:var(--red);margin:6px 2px 10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:720px;margin:auto}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 3px 10px #0001;transition:transform .2s var(--ease);cursor:pointer;display:flex;flex-direction:column}
+.card:active{transform:scale(.96)}
+.page.act .card{animation:pop .55s var(--ease) both;animation-delay:calc(var(--i)*55ms)}
+@keyframes pop{from{opacity:.3;transform:translateY(22px) scale(.93)}}
+.ph{position:relative;aspect-ratio:1;overflow:hidden}
+.ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s var(--ease)}
+.card:hover .ph img{transform:scale(1.06)}
+.badge{position:absolute;top:8px;right:8px;min-width:26px;height:26px;padding:0 7px;border-radius:99px;background:var(--red);color:var(--ona);font-weight:800;display:none;align-items:center;justify-content:center;font-size:.9rem}
+.badge.on{display:flex;animation:bump .35s var(--ease)}
+@keyframes bump{40%{transform:scale(1.5)}}
+.cb{padding:8px 10px 10px;display:flex;flex-direction:column;flex:1}
+.cb h3{font-size:1rem;line-height:1.15;min-height:2.3em}
+.cb .r{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:6px}
+.p{font-weight:800;color:var(--blue);font-size:1.1rem}
+.q{display:flex;align-items:center;gap:6px}
+.q button{width:32px;height:32px;border-radius:50%;background:var(--yel);font-size:1.25rem;font-weight:800;color:var(--ink);line-height:1;transition:transform .15s}
+.q button:active{transform:scale(.8)}
+.q .m{background:#f1e7d0}
+.q span{min-width:16px;text-align:center;font-weight:800}
+#bar{position:fixed;left:0;right:0;bottom:0;padding:10px 12px calc(10px + env(safe-area-inset-bottom));transform:translateY(130%);transition:transform .45s var(--ease);z-index:6}
+#bar.on{transform:none}
+#bar button{display:flex;width:100%;max-width:720px;margin:auto;justify-content:space-between;border-radius:16px;background:var(--red);color:var(--ona);font-size:1.1rem;font-weight:800;padding:13px 18px;box-shadow:0 6px 18px #0004}
+#bar.pulse button{animation:bump2 .4s var(--ease)}
+@keyframes bump2{40%{transform:scale(1.04)}}
+.dot{position:fixed;left:0;top:0;width:18px;height:18px;border-radius:50%;background:var(--yel);z-index:20;pointer-events:none;border:2px solid #fff}
+.ov{position:fixed;inset:0;background:#0008;backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .3s;z-index:9;display:flex;align-items:flex-end;justify-content:center}
+.ov.open{opacity:1;pointer-events:auto}
+.sheet{background:#fff;width:100%;max-width:720px;border-radius:24px 24px 0 0;max-height:92vh;overflow:auto;padding:16px;transform:translateY(100%);transition:transform .45s var(--ease)}
+.ov.open .sheet{transform:none}
+.sheet h2{color:var(--red);margin-bottom:6px}
+.x{position:absolute;top:10px;right:12px;width:36px;height:36px;border-radius:50%;background:#fffd;font-size:1.4rem;z-index:2}
+.sheet .x{position:static;float:right;background:#f1f1f1}
+#md{align-items:center;padding:16px}
+.mc{position:relative;background:#fff;width:100%;max-width:420px;border-radius:26px;overflow:hidden;max-height:92vh;overflow-y:auto;transform:translateY(40px) scale(.92);transition:transform .45s var(--ease)}
+#md.open .mc{transform:none}
+#mi{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.mb{padding:14px 18px 18px}
+#md.open .mb>*{animation:slide .5s var(--ease) both}
+#md.open .mb>*:nth-child(2){animation-delay:.07s}#md.open .mb>*:nth-child(3){animation-delay:.14s}#md.open .mb>*:nth-child(4){animation-delay:.21s}
+.mb h2{font-size:1.5rem;line-height:1.1}
+.mb p{color:var(--mut);margin:8px 0 12px;line-height:1.4}
+.mr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.mr .p{font-size:1.5rem}
+.mr .q button{width:40px;height:40px;font-size:1.5rem}
+.mr .q span{font-size:1.2rem;min-width:22px}
+.go{width:100%;border-radius:14px;background:var(--blue);color:var(--onp);font-size:1.1rem;font-weight:800;padding:12px}
+.line{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:.95rem}
+.line .q button{width:26px;height:26px;font-size:1rem}
+.tot{font:800 1.25rem 'Baloo 2';display:flex;justify-content:space-between;padding:10px 0}
+label{display:block;font-weight:700;font-size:.85rem;margin:10px 0 3px}
+input,textarea,select{width:100%;font:inherit;padding:10px;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:3px solid var(--yel)}
+.send{width:100%;background:#1fa855;color:#fff;font-size:1.1rem;font-weight:800;border-radius:14px;padding:13px;margin-top:14px}
+.note{font-size:.8rem;color:var(--mut);margin-top:8px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+[hidden]{display:none!important}
+.tag{position:absolute;left:8px;top:8px;padding:3px 9px;border-radius:99px;font-weight:800;font-size:.75rem;background:var(--red);color:var(--ona);z-index:1}
+.tag.sold{background:#444;color:#fff}
+.card.sold .ph img{filter:grayscale(1);opacity:.55}.card.sold h3,.card.sold .p{opacity:.6}
+.old{display:block;font-size:.75rem;font-weight:600;color:var(--mut);text-decoration:line-through;line-height:1}
+.msg{padding:28px 16px;text-align:center;color:var(--mut)}
+</style></head><body>
+<header><img id="lg" alt="" hidden><div><h1 id="hn"></h1><p id="tg"></p><p id="inf" style="font-size:.8rem;opacity:.85" hidden></p></div></header>
+<nav id="nav"><span id="ind"></span></nav>
+<div id="pages"><p class="msg">Cargando menú…</p></div>
+<div id="bar"><button onclick="openCart()"><span id="bn"></span><span id="bt"></span></button></div>
+
+<div class="ov" id="md" onclick="if(event.target===this)closeM()"><div class="mc">
+<button class="x" onclick="closeM()" aria-label="Cerrar">×</button>
+<img id="mi" alt=""><div class="mb"><h2 id="mn"></h2><p id="md2"></p>
+<div class="mr"><span class="p" id="mp"></span><span class="tag sold" id="mso" style="position:static" hidden>Agotado</span><div class="q" id="mq2"><button class="m" onclick="mchg(-1)" aria-label="Quitar">−</button><span id="mq">0</span><button onclick="mchg(1)" aria-label="Agregar">+</button></div></div>
+<button class="go" onclick="closeM()">Listo</button></div></div></div>
+
+<div class="ov" id="sh" onclick="if(event.target===this)closeCart()"><div class="sheet">
+<button class="x" onclick="closeCart()" aria-label="Cerrar">×</button>
+<h2>Tu pedido</h2><div id="lines"></div><div class="tot"><span>Total</span><span id="tt"></span></div>
+<label>Nombre</label><input id="nm" autocomplete="name">
+<label>Entrega</label><select id="tp" onchange="tpc()"></select>
+<div id="adr"><label>Dirección y barrio</label><input id="ad" autocomplete="street-address"></div>
+<div id="mesa" style="display:none"><label>Número de mesa</label><input id="ms" inputmode="numeric" placeholder="Ej: 4"></div>
+<label>Método de pago</label><select id="pg"></select>
+<label>Notas (opcional)</label><textarea id="nt" rows="2" placeholder="Sin tomate, salsas extra…"></textarea>
+<button class="send" onclick="send()">Enviar pedido por WhatsApp</button>
+<p class="note" id="nota"></p>
+</div></div>
+<script>
+/* Este archivo es solo el diseño. Los productos, precios y colores se leen de menu.json */
+let CFG={},WA="",items=[],H=[],cur=0,mid=null,cart={};
+const $=id=>document.getElementById(id);
+const cop=n=>(CFG.cur||"$")+n.toLocaleString("es-CO");
+const prh=it=>{const p=Number(it.p)||0,o=Number(it.old)||0;return(o>p?'<s class="old">'+cop(o)+'</s>':'')+cop(p)};
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const vib=()=>{try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}};
+const ink=c=>{const n=parseInt(String(c).slice(1),16);return(.299*(n>>16)+.587*(n>>8&255)+.114*(n&255))>150?"#1d2433":"#ffffff"};
+const ph=n=>"data:image/svg+xml;utf8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="260" height="260"><rect width="260" height="260" fill="'+(CFG.y||"#f9b400")+'"/><text x="130" y="165" font-size="110" text-anchor="middle" fill="'+(CFG.p||"#0057a6")+'" font-family="sans-serif" font-weight="700">'+String(n||"?").trim().charAt(0).toUpperCase().replace(/[<>&]/g,"")+'</text></svg>');
+const pages=$("pages"),nav=$("nav"),ind=$("ind");
+
+function start(P){
+  CFG=P.cfg||{};WA=String(CFG.wa||"").replace(/\D/g,"");
+  const r=document.documentElement.style;
+  [["--blue","p"],["--red","a"],["--yel","y"],["--bg","b"]].forEach(([v,k])=>{if(/^#[0-9a-f]{6}$/i.test(CFG[k]||""))r.setProperty(v,CFG[k])});
+  r.setProperty("--onp",ink(CFG.p||"#0057a6"));r.setProperty("--ona",ink(CFG.a||"#e0301e"));
+  $("tc").content=CFG.p||"#0057a6";
+  document.title=(CFG.name||"Menú")+" — Pide por WhatsApp";
+  $("hn").textContent=CFG.name||"";$("tg").textContent=CFG.tag||"";
+  $("inf").textContent=CFG.info||"";$("inf").hidden=!CFG.info;
+  $("lg").hidden=!CFG.logo;if(CFG.logo)$("lg").src=CFG.logo;
+  const del=[CFG.dom&&"Domicilio",CFG.rec&&"Recoger en el local",CFG.mesa&&"Comer en el local"].filter(Boolean);if(!del.length)del.push("Domicilio");
+  $("tp").innerHTML=del.map(o=>"<option>"+esc(o)+"</option>").join("");
+  const pay=(Array.isArray(CFG.pay)?CFG.pay:String(CFG.pay||"").split("\n")).map(s=>String(s).trim()).filter(Boolean);if(!pay.length)pay.push("Efectivo");
+  $("pg").innerHTML=pay.map(o=>"<option>"+esc(o)+"</option>").join("");
+  $("nota").textContent=CFG.note||"";
+  tpc();
+  /* reiniciar */
+  closeCart();closeM();items=[];cart={};H=[];cur=0;pages.innerHTML="";
+  [...nav.children].slice(1).forEach(b=>b.remove());
+  const MENU=(P.cats||[]).map(c=>({cat:c.cat,items:(c.items||[]).filter(i=>!i.hide).map(i=>({...i,img:i.img||ph(i.n)}))})).filter(c=>c.items.length);
+  if(!MENU.length){pages.innerHTML='<p class="msg">El menú está vacío por ahora.</p>';upd();return}
+  MENU.forEach((c,ci)=>{
+    const b=document.createElement("button");b.textContent=c.cat;b.onclick=()=>{
+      pages.scrollTo({left:ci*pages.clientWidth,behavior:"smooth"});
+      const top=pages.offsetTop-nav.offsetHeight;if(scrollY>top)scrollTo({top,behavior:"smooth"})};nav.appendChild(b);
+    const s=document.createElement("section");s.className="page";
+    s.innerHTML="<h2>"+esc(c.cat)+"</h2><div class='grid'>"+c.items.map((it,k)=>{const id=items.push(it)-1;it.id=id;
+      const o=Number(it.old)||0,p=Number(it.p)||0,tg=it.soldout?'<span class="tag sold">Agotado</span>':o>p?'<span class="tag">Oferta −'+Math.round((o-p)/o*100)+'%</span>':'';
+      return `<div class="card${it.soldout?' sold':''}" style="--i:${k}" onclick="openM(${id},this)"><div class="ph"><img src="${esc(it.img)}" alt="${esc(it.n)}">${tg}<span class="badge" id="b${id}"></span></div><div class="cb"><h3>${esc(it.n)}</h3><div class="r"><span class="p">${prh(it)}</span><div class="q" id="q${id}"></div></div></div></div>`}).join("")+"</div>";
+    pages.appendChild(s);
+  });
+  items.forEach((_,i)=>ctl(i));upd();
+  pages.scrollTo({left:0});measure();setActive(0);
+  document.fonts&&document.fonts.ready.then(measure);
+}
+function ctl(id){if(items[id].soldout){$("q"+id).innerHTML="";return}const n=cart[id]||0,q=$("q"+id);
+  q.innerHTML=n?`<button class="m" onclick="chg(${id},-1,this,event)" aria-label="Quitar">−</button><span>${n}</span><button onclick="chg(${id},1,this,event)" aria-label="Agregar">+</button>`:`<button onclick="chg(${id},1,this,event)" aria-label="Agregar">+</button>`;
+  const b=$("b"+id);b.textContent=n;b.classList.remove("on");if(n){void b.offsetWidth;b.classList.add("on")}}
+function chg(id,d,btn,ev){if(ev)ev.stopPropagation();if(items[id]&&items[id].soldout)return;cart[id]=Math.max(0,(cart[id]||0)+d);vib();ctl(id);upd();if(d>0&&btn)fly(btn);if(mid===id)$("mq").textContent=cart[id]}
+function fly(el){const a=el.getBoundingClientRect(),b=$("bt").getBoundingClientRect(),d=document.createElement("div");d.className="dot";
+  d.style.transform=`translate(${a.left+a.width/2-9}px,${a.top+a.height/2-9}px)`;document.body.append(d);
+  d.animate([{transform:d.style.transform+" scale(1)",opacity:1},{transform:`translate(${b.left+b.width/2-9}px,${b.top+b.height/2-9}px) scale(.3)`,opacity:.5}],{duration:650,easing:"cubic-bezier(.5,-.3,.7,1)"}).onfinish=()=>{d.remove();const r=$("bar");r.classList.remove("pulse");void r.offsetWidth;r.classList.add("pulse")}}
+function tot(){let n=0,t=0;items.forEach((it,i)=>{const q=cart[i]||0;n+=q;t+=q*(Number(it.p)||0)});return[n,t]}
+function upd(){const[n,t]=tot();$("bar").classList.toggle("on",n>0);$("bn").textContent=n+(n==1?" producto":" productos")+" · Ver pedido";$("bt").textContent=cop(t);if($("sh").classList.contains("open"))drawCart()}
+function drawCart(){const[n,t]=tot();$("lines").innerHTML=items.map((it,i)=>cart[i]?`<div class="line"><span>${esc(it.n)}</span><div class="q"><button class="m" onclick="chg(${i},-1)">−</button><span>${cart[i]}</span><button onclick="chg(${i},1)">+</button></div><b>${cop(cart[i]*(Number(it.p)||0))}</b></div>`:"").join("");$("tt").textContent=cop(t);if(!n)closeCart()}
+function openCart(){$("sh").classList.add("open");drawCart()}
+function closeCart(){$("sh").classList.remove("open")}
+function openM(id,card){mid=id;const it=items[id],mi=$("mi");mi.src=it.img;$("mn").textContent=it.n;$("md2").textContent=it.d||"";$("mp").innerHTML=prh(it);$("mso").hidden=!it.soldout;$("mq2").style.display=it.soldout?"none":"flex";$("mq").textContent=cart[id]||0;
+  const md=$("md"),src=card.querySelector("img").getBoundingClientRect();md.classList.add("open");document.body.style.overflow="hidden";
+  const d=mi.getBoundingClientRect();
+  mi.animate([{transform:`translate(${src.left-d.left}px,${src.top-d.top}px) scale(${src.width/d.width},${src.height/d.height})`,transformOrigin:"top left"},{transform:"none",transformOrigin:"top left"}],{duration:480,easing:"cubic-bezier(.2,.8,.2,1)"})}
+function closeM(){$("md").classList.remove("open");document.body.style.overflow="";mid=null}
+function mchg(d){if(mid!==null)chg(mid,d,d>0?document.querySelector("#md .q button:last-child"):null)}
+function setActive(i){const b=nav.children[i+1];if(!b)return;if(i===cur&&b.classList.contains("on"))return;cur=i;
+  [...nav.children].slice(1).forEach((x,j)=>x.classList.toggle("on",j==i));
+  [...pages.children].forEach((p,j)=>p.classList.toggle("act",j==i));
+  ind.style.width=b.offsetWidth+"px";ind.style.transform=`translateX(${b.offsetLeft}px)`;
+  nav.scrollTo({left:b.offsetLeft-nav.clientWidth/2+b.offsetWidth/2,behavior:"smooth"})}
+function measure(){H=[...pages.children].map(p=>p.offsetHeight);fit()}
+function fit(){if(!H.length)return;const w=pages.clientWidth,f=pages.scrollLeft/w,i=Math.floor(f),t=f-i;
+  pages.style.height=((H[i]||0)*(1-t)+(H[i+1]??H[i]??0)*t)+"px";setActive(Math.min(Math.round(f),H.length-1))}
+let tick=false;pages.addEventListener("scroll",()=>{if(!tick){tick=true;requestAnimationFrame(()=>{tick=false;fit()})}});
+addEventListener("resize",()=>{measure();pages.scrollTo({left:cur*pages.clientWidth})});
+function tpc(){const v=$("tp").value;$("adr").style.display=v=="Domicilio"?"block":"none";$("mesa").style.display=v=="Comer en el local"?"block":"none";$("nota").style.display=v=="Comer en el local"||!CFG.note?"none":"block"}
+function send(){
+  const[n,t]=tot();if(!n)return;
+  const dom=$("tp").value=="Domicilio",loc=$("tp").value=="Comer en el local";
+  if(!$("nm").value.trim()){$("nm").focus();return}
+  if(dom&&!$("ad").value.trim()){$("ad").focus();return}
+  if(loc&&!$("ms").value.trim()){$("ms").focus();return}
+  let m="*Nuevo pedido — "+(CFG.name||"Menú")+"*\n\n";
+  items.forEach((it,i)=>{if(cart[i])m+=`• ${cart[i]} × ${it.n} — ${cop(cart[i]*(Number(it.p)||0))}\n`});
+  m+=`\n*Total productos:* ${cop(t)}\n*Cliente:* ${$("nm").value.trim()}\n*Entrega:* ${$("tp").value}\n`;
+  if(dom)m+=`*Dirección:* ${$("ad").value.trim()}\n`;
+  if(loc)m+=`*Mesa:* ${$("ms").value.trim()}\n`;
+  m+=`*Pago:* ${$("pg").value}\n`;
+  if($("nt").value.trim())m+=`*Notas:* ${$("nt").value.trim()}\n`;
+  window.open("https://wa.me/"+WA+"?text="+encodeURIComponent(m),"_blank");
+}
+/* Arranque: lee menu.json (o recibe datos del editor cuando se abre con ?preview=1) */
+if(new URLSearchParams(location.search).get("preview")==="1"){
+  addEventListener("message",e=>{if(e.data&&e.data.type==="menu-preview"&&e.data.data)start(e.data.data)});
+  parent.postMessage({type:"menu-ready"},"*");
+}else{
+  fetch("menu.json?v="+Date.now(),{cache:"no-store"}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(start)
+   .catch(()=>{pages.innerHTML='<p class="msg">No pudimos cargar el menú. Intenta de nuevo en un momento.</p>'});
+}
+</script></body></html>
