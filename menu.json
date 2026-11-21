@@ -27,8 +27,8 @@
      "n": "Combo individual ala",
      "d": "175 g de papa a la francesa + 1 ala de pollo broaster completa + miel + tomate",
      "p": 8000,
-     "img": "img/combo-individual-ala.jpg",
      "old": 0,
+     "img": "img/combo-individual-ala.jpg",
      "soldout": false,
      "hide": false
     },
@@ -36,8 +36,8 @@
      "n": "Combo individual muslo",
      "d": "175 g de papa a la francesa + 1 muslo de pollo broaster + miel + tomate",
      "p": 8000,
-     "img": "img/combo-individual-muslo.jpg",
      "old": 0,
+     "img": "img/combo-individual-muslo.jpg",
      "soldout": false,
      "hide": false
     },
@@ -45,8 +45,8 @@
      "n": "Combo individual contramuslo",
      "d": "175 g de papa a la francesa + 1 contramuslo de pollo broaster + miel + tomate",
      "p": 9900,
-     "img": "img/combo-individual-contramuslo.jpg",
      "old": 0,
+     "img": "img/combo-individual-contramuslo.jpg",
      "soldout": false,
      "hide": false
     },
@@ -54,8 +54,8 @@
      "n": "Combo individual pechuga",
      "d": "175 g de papa a la francesa + 1 pechuga abierta de pollo broaster + miel + tomate",
      "p": 10900,
-     "img": "img/combo-individual-pechuga.jpg",
      "old": 0,
+     "img": "img/combo-individual-pechuga.jpg",
      "soldout": false,
      "hide": false
     },
@@ -63,8 +63,8 @@
      "n": "Combo pareja alas",
      "d": "275 g de papa a la francesa + 2 alas de pollo broaster + miel + tomate",
      "p": 13500,
-     "img": "img/combo-pareja-alas.jpg",
      "old": 0,
+     "img": "img/combo-pareja-alas.jpg",
      "soldout": false,
      "hide": false
     },
@@ -72,8 +72,8 @@
      "n": "Combo pareja muslos",
      "d": "275 g de papa a la francesa + 2 muslos de pollo broaster + miel + tomate",
      "p": 13500,
-     "img": "img/combo-pareja-muslos.jpg",
      "old": 0,
+     "img": "img/combo-pareja-muslos.jpg",
      "soldout": false,
      "hide": false
     },
@@ -81,8 +81,8 @@
      "n": "Combo pareja muslo y ala",
      "d": "275 g de papa a la francesa + 1 muslo + 1 ala completa de pollo broaster + miel + tomate",
      "p": 13500,
-     "img": "img/combo-pareja-muslo-y-ala.jpg",
      "old": 0,
+     "img": "img/combo-pareja-muslo-y-ala.jpg",
      "soldout": false,
      "hide": false
     },
@@ -90,8 +90,8 @@
      "n": "Cuarto muslo y contramuslo",
      "d": "275 g de papa a la francesa + 1 muslo y contramuslo de pollo broaster + miel + tomate",
      "p": 14900,
-     "img": "img/cuarto-muslo-y-contramuslo.jpg",
      "old": 0,
+     "img": "img/cuarto-muslo-y-contramuslo.jpg",
      "soldout": false,
      "hide": false
     },
@@ -99,8 +99,8 @@
      "n": "Cuarto pechuga y ala",
      "d": "275 g de papa a la francesa + 1 ala + 1 pechuga abierta de pollo broaster + miel + tomate",
      "p": 15500,
+     "old": 18300,
      "img": "img/cuarto-pechuga-y-ala.jpg",
-     "old": 0,
      "soldout": false,
      "hide": false
     },
@@ -108,8 +108,8 @@
      "n": "Medio pollo",
      "d": "350 g de papa a la francesa + 1 ala + 1 pechuga + 1 muslo + 1 contramuslo de pollo broaster + gaseosa 1 L + miel + tomate",
      "p": 32900,
-     "img": "img/medio-pollo.jpg",
      "old": 0,
+     "img": "img/medio-pollo.jpg",
      "soldout": false,
      "hide": false
     },
@@ -117,8 +117,17 @@
      "n": "1 pollo entero",
      "d": "700 g de papa a la francesa + 2 alas + 2 pechugas + 2 muslos + 2 contramuslos de pollo broaster + miel + tomate",
      "p": 56900,
-     "img": "img/1-pollo-entero.jpg",
      "old": 0,
+     "img": "img/1-pollo-entero.jpg",
+     "soldout": false,
+     "hide": false
+    },
+    {
+     "n": "X4 Muslos",
+     "d": "4 MUSLOS + SALSA DE TOMATE + MIEL ",
+     "p": 19200,
+     "old": 0,
+     "img": "img/x4-muslos-mwqfib2j0.jpg",
      "soldout": false,
      "hide": false
     }
@@ -131,8 +140,8 @@
      "n": "Salchicrush",
      "d": "250 g de papas a la francesa + salchicha + queso costeño rallado + papa ripio + salsas tomate, piña, rosada, BBQ, crema leña + mini crush",
      "p": 14500,
-     "img": "img/salchicrush.jpg",
      "old": 0,
+     "img": "img/salchicrush.jpg",
      "soldout": false,
      "hide": false
     },
@@ -140,8 +149,35 @@
      "n": "Mini Crush",
      "d": "175 g de papa a la francesa + trocitos de pechuga broaster completa + miel + tomate",
      "p": 12800,
-     "img": "img/mini-crush.jpg",
      "old": 0,
+     "img": "img/mini-crush.jpg",
+     "soldout": false,
+     "hide": false
+    },
+    {
+     "n": "Alitas en salsa BBQ",
+     "d": "3 ALITAS BAÑADAS EN SALSA BBQ + 175 GM DE PAPAS A LA FRANCESA +  GASEOSA 250 ",
+     "p": 13899,
+     "old": 0,
+     "img": "img/alitas-en-salsa-bbq-mwqfib2j1.jpg",
+     "soldout": false,
+     "hide": false
+    },
+    {
+     "n": "SUPER CRUSH",
+     "d": "250 GM DE PAPAS A LA FRANCESA, SNACK CRUSH, QUESO GRATINADO, SALSA ESPECIAL",
+     "p": 21802,
+     "old": 0,
+     "img": "img/super-crush-mwqfib2j2.jpg",
+     "soldout": false,
+     "hide": false
+    },
+    {
+     "n": "SNACK CHUSH",
+     "d": "200 GM DE PAPAS A LA FRANCESA, SNACK CRUSH, BOTE DE SALSA ESPECIAL",
+     "p": 16000,
+     "old": 0,
+     "img": "img/snack-chush-mwqfib2j3.jpg",
      "soldout": false,
      "hide": false
     }
@@ -154,8 +190,8 @@
      "n": "Porción de papas a la francesa",
      "d": "200 g de papas a la francesa",
      "p": 4000,
-     "img": "img/porcion-de-papas-a-la-francesa.jpg",
      "old": 0,
+     "img": "img/porcion-de-papas-a-la-francesa.jpg",
      "soldout": false,
      "hide": false
     }
